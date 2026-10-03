@@ -28,9 +28,15 @@ export function TodayPage() {
           <h1 className="text-3xl font-bold tracking-tight">Aujourd'hui</h1>
           {organization && <p className="text-lg">{organization.name}</p>}
         </div>
-        <Button variant="outline" size="sm" onClick={logout} aria-label="Se déconnecter">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={logout}
+          aria-label="Se déconnecter"
+          className="shrink-0"
+        >
           <LogOut />
-          Déconnexion
+          <span className="hidden sm:inline">Déconnexion</span>
         </Button>
       </header>
 
