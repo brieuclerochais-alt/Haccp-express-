@@ -1,0 +1,41 @@
+[project]
+name = "haccp-express-backend"
+version = "0.1.0"
+description = "HACCP Express — backend Django/DRF"
+requires-python = ">=3.12"
+dependencies = [
+    "django>=5.2,<5.3",
+    "djangorestframework>=3.16",
+    "djangorestframework-simplejwt>=5.5",
+    "django-cors-headers>=4.7",
+    "django-filter>=25.1",
+    "drf-spectacular>=0.28",
+    "psycopg[binary]>=3.2",
+    "dj-database-url>=2.3",
+    "gunicorn>=23",
+    "whitenoise>=6.9",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "pytest-django>=4.11",
+    "ruff>=0.11",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings_test"
+python_files = ["test_*.py"]
+testpaths = ["apps"]
+addopts = "--reuse-db -q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+exclude = ["migrations"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "DJ"]
