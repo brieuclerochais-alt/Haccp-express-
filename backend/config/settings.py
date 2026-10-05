@@ -9,6 +9,7 @@ from datetime import timedelta
 from pathlib import Path
 
 import dj_database_url
+from django.core.exceptions import ImproperlyConfigured
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 REPO_DIR = BASE_DIR.parent
@@ -97,6 +98,14 @@ TEMPLATES = [
 ]
 
 # --- Base de données -----------------------------------------------------------
+
+# Sur Railway, DATABASE_URL doit être fournie par le plugin PostgreSQL
+# (variable `DATABASE_URL = ${{Postgres.DATABASE_URL}}` sur le service web).
+if os.environ.get("RAILWAY_ENVIRONMENT") and not os.environ.get("DATABASE_URL"):
+    raise ImproperlyConfigured(
+        "DATABASE_URL manquante. Ajoutez un plugin PostgreSQL au projet Railway et "
+        "définissez DATABASE_URL=${{Postgres.DATABASE_URL}} sur le service web."
+    )
 
 DATABASES = {
     "default": dj_database_url.config(

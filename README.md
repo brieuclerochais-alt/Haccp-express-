@@ -85,11 +85,23 @@ nouveau modèle.
 
 ## Déploiement (Railway, staging)
 
-1. Créer un projet Railway en région UE, ajouter un plugin PostgreSQL.
-2. Créer un service depuis ce dépôt : `railway.toml` pointe sur `backend/Dockerfile`.
-3. Définir `DJANGO_SECRET_KEY`, `DJANGO_ALLOWED_HOSTS`, `DJANGO_CSRF_TRUSTED_ORIGINS`,
-   `CORS_ALLOWED_ORIGINS` (`DATABASE_URL` est injectée par le plugin).
-4. L'image exécute `migrate` au démarrage puis `gunicorn`. Healthcheck : `/api/health/`.
+1. Créer un projet Railway en région UE (`europe-west4`).
+2. **Ajouter une base PostgreSQL** au projet : « + New » → « Database » → « PostgreSQL ».
+3. Créer un service depuis ce dépôt : `railway.toml` pointe sur `backend/Dockerfile`.
+4. Dans l'onglet « Variables » du service web, ajouter :
+
+   | Variable                       | Valeur                                                        |
+   | ------------------------------ | ------------------------------------------------------------- |
+   | `DATABASE_URL`                 | `${{Postgres.DATABASE_URL}}` (référence vers le plugin)       |
+   | `DJANGO_SECRET_KEY`            | une chaîne aléatoire longue (`openssl rand -hex 32`)          |
+   | `DJANGO_ALLOWED_HOSTS`         | le domaine Railway, ex. `haccp-express.up.railway.app`        |
+   | `DJANGO_CSRF_TRUSTED_ORIGINS`  | `https://haccp-express.up.railway.app`                        |
+   | `CORS_ALLOWED_ORIGINS`         | `https://haccp-express.up.railway.app`                        |
+
+   Sans `DATABASE_URL`, le conteneur s'arrête au démarrage avec un message explicite
+   (il tenterait sinon de joindre un Postgres sur `localhost`).
+5. Redéployer. L'image exécute `migrate` au démarrage puis `gunicorn`.
+   Healthcheck : `/api/health/`.
 
 ## Lots
 
